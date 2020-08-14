@@ -1,0 +1,70 @@
+version: '3'
+services:
+
+  chrome:
+    image: selenium/node-chrome:latest
+    volumes:
+      - /dev/shm:/dev/shm
+      - ../chrome_app:/chrome_app
+      - ../ext:/ext
+    depends_on:
+      - hub
+    environment:
+    #HUB_HOST: hub # default not working -> set via env
+      - HUB_HOST=hub
+    # https://github.com/eficode/Docker-Selenium-Example/blob/master/docker-compose.yml
+      - HUB_PORT_4444_TCP_ADDR=hub
+      - HUB_PORT_4444_TCP_PORT=4444
+    links:
+      - fpmon
+    # This will expose the port 4488 of the container to an ephemeral unallocated port on the host machine. 
+    # ports:
+    #   - "4488" 
+
+  hub:
+    image: selenium/hub:latest
+    container_name: selenium-hub
+    ports:
+      - "4444:4444"
+
+  fpcrawl:
+    container_name: fpcrawl
+    build:
+      context: .
+      dockerfile: Dockerfile.fpcrawl
+    volumes:
+      # crawler needs to know only the crawler and the externsion
+      - ../crawler:/crawler
+      - ../chrome_app:/chrome_app
+      - ../input:/input
+      - ../monitor:/monitor
+      - ../scans:/scans
+      - ../ext:/ext
+    #depends_on:
+    #  - hub
+    links:
+      - hub
+      - fpmon
+    environment:
+      - PYTHONUNBUFFERED=1
+    #network_mode: host
+    #network_mode: bridge
+      
+  fpmon:
+    container_name: fpmon
+    build:
+      context: .
+      dockerfile: Dockerfile.fpmon
+    volumes:
+      #- ../crawler:/crawler
+      #- ../chrome_app:/chrome_app
+      - ../monitor:/monitor
+    #depends_on:
+    #  - hub
+    links:
+      - hub
+    ports:
+      # extension sends to link fpmon:8898
+      - "8898:8898" 
+    environment:
+      - PYTHONUNBUFFERED=1

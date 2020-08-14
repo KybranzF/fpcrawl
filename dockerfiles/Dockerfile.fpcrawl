@@ -1,0 +1,20 @@
+FROM python:3
+
+# in VPN and after disconnecting need to refresh docker to have a working networking setup
+# sudo systemctl restart docker
+
+RUN pip3 install selenium
+RUN pip3 install pebble
+
+#CMD python3 /crawler/fpcrawl.py -i /input/ju_list.txt -r -t14 && mv /monitor/out/crawl.csv /scans/auto_julist_1.csv && python3 /crawler/fpcrawl.py -i /input/top_500.csv -r -t14 && mv /monitor/out/crawl.csv /scans/auto_top_500_1.csv && python3 /crawler/fpcrawl.py -i /input/top10000_alexa.csv -r -t14 && mv /monitor/out/crawl.csv /scans/auto_top10000_alexa_1.csv
+
+#CMD python3 /crawler/fpcrawl.py -i /input/top10000_alexa.csv -r -t14 && mv /monitor/out/crawl.csv /scans/top10000_alexa_FINAL.csv
+
+# commented out async and defer for ext scans
+#CMD python3 /crawler/fpcrawl.py -i /input/my_list.txt -r -t14 && mv /monitor/out/crawl.csv /scans/my_list_adblock_FINAL.csv
+
+#CMD python3 /crawler/fpcrawl.py -i /input/my_list_d1.txt -r -t14 && mv /monitor/out/crawl.csv /scans/my_list_d1_FINAL.csv
+
+#CMD python3 /crawler/fpcrawl.py -i /input/my_list_d1.txt -r -t14 && mv /monitor/out/crawl.csv /scans/my_list_d1_FINAL.csv && python3 /crawler/fpcrawl.py -i /input/my_list_d2.txt -r -t14 && mv /monitor/out/crawl.csv /scans/my_list_d2_FINAL.csv
+
+CMD python3 /crawler/fpcrawl.py -i /input/top10k_d1_start_105600.txt -r -t14 && mv /monitor/out/crawl.csv /scans/alexa_10k_d1.csv
